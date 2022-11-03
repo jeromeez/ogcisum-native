@@ -77,9 +77,9 @@ export default function ShowMap() {
     locationPermission: false,
     locations: updatedLocations,
     userLocation: {
-      latitude: -27.499526188402154,
-      longitude: 152.9728129460468,
-      // Starts at "Indooroopilly Shopping Centre"
+      latitude: -27.498248114899546, //-27.498248114899546, 153.01788081097033
+      longitude: 153.01788081097033,
+      // Starts at "UQ"
     },
     nearbyLocation: {},
   };
@@ -185,7 +185,7 @@ export default function ShowMap() {
           />
         ))}
       </MapView>
-      <NearbyLocation {...mapState.nearbyLocation} />
+      {/* <NearbyLocation {...mapState.nearbyLocation} /> */}
     </>
   );
 }

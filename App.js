@@ -1,92 +1,44 @@
-import React, {useState, useRef} from 'react';
+// Additional Libraries
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import {NavigationContainer, StackActions} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Image,
-  Dimensions,
-  Text,
-  Button,
-} from 'react-native';
+// Components
+import ShowMap from './components/ShowMap';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-import {WebView} from 'react-native-webview';
+// Themes
+import {colors} from './data/theme';
 
-const {width, height} = Dimensions.get('window');
+// Screens
+import HomeScreen from './navigation/screens/HomeScreen';
+import ImagePicker from './navigation/screens/ImagePicker';
+import Tabs from './components/Tabs';
 
-const styles = {
-  container: {
-    padding: 20,
-  },
-  webViewContainer: {
-    height: height / 2,
-    borderWidth: 3,
-    marginBottom: 20,
-  },
-  webView: {},
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-};
+const Stack = createStackNavigator();
 
+// App function
 export default function App() {
-  const [webViewState, setWebViewState] = useState({
-    loaded: false,
-    actioned: false,
-  });
-  const webViewRef = useRef();
-
-  function webViewLoaded() {
-    setWebViewState({
-      ...webViewState,
-      loaded: true,
-    });
-  }
-
-  function handleReloadPress() {
-    webViewRef.current.reload();
-  }
-
-  function handleActionPress() {
-    if (!webViewState.actioned) {
-      webViewRef.current.injectJavaScript('startPlayback()');
-    } else {
-      webViewRef.current.injectJavaScript('stopPlayback()');
-    }
-    setWebViewState({
-      ...webViewState,
-      actioned: !webViewState.actioned,
-    });
-  }
-
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <View style={styles.webViewContainer}>
-          <WebView
-            ref={ref => (webViewRef.current = ref)}
-            originWhitelist={['*']}
-            source={{
-              uri: 'https://wmp.interaction.courses/test-webview/',
-            }}
-            pullToRefreshEnabled={true}
-            onLoad={webViewLoaded}
-            style={styles.webView}
-          />
-        </View>
-        {webViewState && (
-          <View style={styles.buttonContainer}>
-            <Button onPress={handleReloadPress} title="Reload WebView" />
-            <Button
-              onPress={handleActionPress}
-              title={
-                !webViewState.actioned ? 'Start Playback' : 'Stop Playback'
-              }
-            />
-          </View>
-        )}
-      </View>
+    <SafeAreaView style={{backgroundColor: colors.darkGreen, flex: 1}}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+          initialRouteName={'Tabs'}>
+          <Stack.Screen name="Tabs" children={props => <Tabs {...props} />} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaView>
   );
 }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     color: '#fff',
+//     flex: 1,
+//     justifyContent: 1,
+//   },
+// });
