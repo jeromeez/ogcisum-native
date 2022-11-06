@@ -60,14 +60,15 @@ export const fonts = {
     color: colors.black,
     fontFamily: 'System',
     fontSize: sizes.body2,
-    lineHeight: 30,
-    paddingBottom: sizes.padding / 2,
+    lineHeight: 24,
+    paddingBottom: sizes.padding / 10,
+    fontWeight: 'bold',
   },
   body3: {
     color: colors.black,
     fontFamily: 'System',
     fontSize: sizes.body3,
-    lineHeight: 22,
+    lineHeight: 30,
     paddingBottom: sizes.padding,
   },
   body4: {

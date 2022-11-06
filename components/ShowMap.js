@@ -1,4 +1,6 @@
-// Import React Native
+/**
+ * Importing necessary libraries
+ */
 import React, {useState, useEffect} from 'react';
 import {
   PermissionsAndroid,
@@ -9,18 +11,15 @@ import {
   Text,
   Image,
 } from 'react-native';
-
-// Import React Native Maps
 import MapView, {Marker, Circle} from 'react-native-maps';
 
 // Import React Native Geolocation
 import Geolocation from '@react-native-community/geolocation';
 import {getDistance} from 'geolib';
 
-// Import Locations Data
-import {locations} from '../data/locations';
-
-// Define Stylesheet
+/**
+ * Stylesheet for styling the map screen
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -51,7 +50,7 @@ function NearbyLocation(props) {
                 ...styles.nearbyLocationText,
                 fontWeight: 'bold',
               }}>
-              Within 100 Metres!
+              There's Music Nearby
             </Text>
           )}
         </View>
@@ -61,8 +60,16 @@ function NearbyLocation(props) {
 }
 
 // Main component for displaying the map and markers
-export default function ShowMap() {
+export default function ShowMap({
+  theme,
+  setStateLocation,
+  stateLocation,
+  locations,
+}) {
   // Convert string-based latlong to object-based on each location
+  if (typeof locations === 'undefined') {
+    return null;
+  }
   const updatedLocations = locations.map(location => {
     const latlong = location.latlong.split(', ');
     location.coordinates = {
@@ -77,9 +84,8 @@ export default function ShowMap() {
     locationPermission: false,
     locations: updatedLocations,
     userLocation: {
-      latitude: -27.498248114899546, //-27.498248114899546, 153.01788081097033
+      latitude: -27.498248114899546,
       longitude: 153.01788081097033,
-      // Starts at "UQ"
     },
     nearbyLocation: {},
   };
@@ -122,7 +128,6 @@ export default function ShowMap() {
     }
   }, []);
 
-  // Function to retrieve location nearest to current user location
   function calculateDistance(userLocation) {
     const nearestLocations = mapState.locations
       .map(location => {
@@ -139,6 +144,11 @@ export default function ShowMap() {
     return nearestLocations.shift();
   }
 
+  useEffect(() => {
+    const nearby = calculateDistance(mapState.userLocation);
+    setStateLocation(nearby);
+  });
+
   // Only watch the user's current location when device permission granted
   if (mapState.locationPermission) {
     Geolocation.watchPosition(
@@ -148,6 +158,7 @@ export default function ShowMap() {
           longitude: position.coords.longitude,
         };
         const nearbyLocation = calculateDistance(userLocation);
+        console.log(nearbyLocation);
         setMapState({
           ...mapState,
           userLocation,
@@ -185,7 +196,6 @@ export default function ShowMap() {
           />
         ))}
       </MapView>
-      {/* <NearbyLocation {...mapState.nearbyLocation} /> */}
     </>
   );
 }
