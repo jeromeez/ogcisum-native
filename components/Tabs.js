@@ -12,6 +12,14 @@ import ImagePicker from '../navigation/screens/ImagePicker';
 import {colors, sizes} from '../data/theme';
 import icons from '../data/icons';
 
+/**
+ * return full name of the user
+ * @param   {string} focused  Tab being focused on
+ * @param   {string} icon     Icon being used
+ * @param   {string} number   Tab Numbering
+ * @param   {string} state    The state of the distance
+ * @return  {View}            Returns 1 tab component
+ */
 function TabIcon({focused, icon, number, state}) {
   return (
     <View
@@ -50,6 +58,13 @@ function TabIcon({focused, icon, number, state}) {
 
 const Tab = createBottomTabNavigator();
 
+/**
+ * Function to customize the Bottom Tabs
+ * @param {string} icon   The icon used
+ * @param {string} number The tab numbering
+ * @param {string} state  The state of the current
+ * @return {TabIcon}      Returns a tab
+ */
 function tabOptions(icon, number, state) {
   return {
     tabBarIcon: ({focused}) => (
@@ -74,10 +89,23 @@ function tabOptions(icon, number, state) {
   };
 }
 
-function Tabs({navigation, theme, stateLocation, setStateLocation, locations}) {
-  // console.log(state.distance.nearby);
-  //
-  // const distanceNearby = state.distance.nearby;
+/**
+ * Function to customize the Bottom Tabs
+ * @param {string} icon   The icon used
+ * @param {string} number The tab numbering
+ * @param {string} state  The state of the current
+ * @return {TabIcon}      Returns a tab
+ */
+function Tabs({
+  navigation,
+  theme,
+  stateLocation,
+  setStateLocation,
+  locations,
+  recordingData,
+  photoState,
+  setPhotoState,
+}) {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -112,13 +140,22 @@ function Tabs({navigation, theme, stateLocation, setStateLocation, locations}) {
             theme={theme}
             stateLocation={stateLocation}
             setStateLocation={setStateLocation}
+            recordingData={recordingData}
+            photoState={photoState}
           />
         )}
         options={() => tabOptions(icons.logoLight, 'second', stateLocation)}
       />
       <Tab.Screen
         name="Profile"
-        children={() => <ImagePicker navigation={navigation} theme={theme} />}
+        children={() => (
+          <ImagePicker
+            navigation={navigation}
+            theme={theme}
+            photoState={photoState}
+            setPhotoState={setPhotoState}
+          />
+        )}
         options={() => tabOptions(icons.darkProfile, 'third', false)}
       />
     </Tab.Navigator>

@@ -19,8 +19,10 @@ import {colors, fonts, sizes} from '../../data/theme';
 
 const {width, height} = Dimensions.get('window');
 
+// Get color scheme
 const colorScheme = Appearance.getColorScheme();
 
+// Code for styling
 const styles = {
   container: {
     padding: 20,
@@ -81,20 +83,16 @@ const styles = {
   },
 };
 
-export default function ImagePicker({theme}) {
-  // Variable to see the device's dark mode or light mode
-  const [photoState, setPhotoState] = useState({});
-  // console.log(photoState);
-
+/**
+ * Main component for displaying the edit profile section
+ * @param   {string} theme  The light / dark mode for styling
+ */
+export default function ImagePicker({theme, photoState, setPhotoState}) {
   async function handleChangePress() {
     const result = await launchImageLibrary();
     if (typeof result.assets[0] == 'object') {
       setPhotoState(result.assets[0]);
     }
-  }
-
-  async function handleRemovePress() {
-    setPhotoState({});
   }
 
   const hasPhoto = typeof photoState.uri != 'undefined';

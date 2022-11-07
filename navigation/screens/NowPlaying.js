@@ -16,10 +16,11 @@ import {WebView} from 'react-native-webview';
 
 import {colors, sizes, fonts} from '../../data/theme';
 
-function NowPlaying({theme, stateLocation}) {
+function NowPlaying({theme, stateLocation, recordingData, photoState}) {
   const {width, height} = Dimensions.get('window');
+
+  // Get the current user's distance, location name, state, suburb
   const distanceNearby = stateLocation.distance.nearby;
-  console.log(distanceNearby);
   const nearbyLocation = stateLocation.location;
   const nearbyState = stateLocation.state;
   const nearbySuburb = stateLocation.suburb;
@@ -28,6 +29,17 @@ function NowPlaying({theme, stateLocation}) {
     loaded: false,
     actioned: false,
   });
+
+  /**
+   * Function to check if there's already a photo uploaded
+   * @param   {string} photoState  The state of the photo
+   * @return  {boolean}            returns true or false
+   */
+  function hasPhoto(photoState) {
+    if ((photoState = {})) {
+      return false;
+    } else true;
+  }
 
   const webViewRef = useRef();
 
@@ -42,8 +54,14 @@ function NowPlaying({theme, stateLocation}) {
     webViewRef.current.reload();
   }
 
+  /**
+   * Function to handle if there's a button press
+   * @return {WebView}    Returns current webview state (play or stop)
+   */
   function handleActionPress() {
+    let strData = JSON.stringify(recordingData);
     if (!webViewState.actioned) {
+      webViewRef.current.injectJavaScript(`setupParts(${strData})`);
       webViewRef.current.injectJavaScript('startPlayback()');
     } else {
       webViewRef.current.injectJavaScript('stopPlayback()');
@@ -54,6 +72,7 @@ function NowPlaying({theme, stateLocation}) {
     });
   }
 
+  // Color Scheme (light or dark)
   const colorScheme = Appearance.getColorScheme();
 
   // Code for Styles
@@ -126,7 +145,25 @@ function NowPlaying({theme, stateLocation}) {
         colorScheme == 'light' ? colors.light.fgColor : colors.dark.fgColor,
       borderRadius: 10,
     },
+    currentlytext: {
+      ...fonts.body2,
+      color: theme == 'dark' ? colors.dark.fgColor : colors.light.fgColor,
+    },
+    nametext: {
+      ...fonts.body3,
+      color: theme == 'dark' ? colors.dark.fgColor : colors.light.fgColor,
+      top: 10,
+      flex: 1,
+    },
   };
+
+  // Conditional for Smiley Icons
+  let iconFix;
+  if (colorScheme == 'light') {
+    iconFix = icons.darkSmile;
+  } else {
+    iconFix = icons.lightSmile;
+  }
 
   if (!distanceNearby) {
     return (
@@ -188,7 +225,7 @@ function NowPlaying({theme, stateLocation}) {
               ref={ref => (webViewRef.current = ref)}
               originWhitelist={['*']}
               source={{
-                uri: 'https://wmp.interaction.courses/test-webview/',
+                uri: 'https://wmp.interaction.courses/playback-webview/',
               }}
               pullToRefreshEnabled={true}
               onLoad={webViewLoaded}
@@ -214,32 +251,14 @@ function NowPlaying({theme, stateLocation}) {
         </View>
 
         <View style={{flexDirection: 'column'}}>
-          <Text
-            style={{
-              ...fonts.body2,
-              color:
-                theme == 'dark' ? colors.dark.fgColor : colors.light.fgColor,
-            }}>
-            Currently At This Location:
-          </Text>
+          <Text style={styles.currentlytext}>Currently At This Location:</Text>
           <View style={styles.header}>
             <Image
               style={styles.smiley}
-              source={theme == 'light' ? icons.darkSmile : icons.lightSmile}
+              source={hasPhoto() ? {uri: photoState.uri} : iconFix}
             />
             <View style={{paddingBottom: 20}}>
-              <Text
-                style={{
-                  ...fonts.body3,
-                  color:
-                    theme == 'dark'
-                      ? colors.dark.fgColor
-                      : colors.light.fgColor,
-                  top: 10,
-                  flex: 1,
-                }}>
-                Enter Your Name
-              </Text>
+              <Text style={styles.nametext}>Enter Your Name</Text>
             </View>
           </View>
           <View style={styles.header}>
@@ -248,18 +267,7 @@ function NowPlaying({theme, stateLocation}) {
               source={theme == 'light' ? icons.darkSmile : icons.lightSmile}
             />
             <View style={{paddingBottom: 100}}>
-              <Text
-                style={{
-                  ...fonts.body3,
-                  color:
-                    theme == 'dark'
-                      ? colors.dark.fgColor
-                      : colors.light.fgColor,
-                  top: 10,
-                  flex: 1,
-                }}>
-                And others...
-              </Text>
+              <Text style={styles.nametext}>And others...</Text>
             </View>
           </View>
         </View>

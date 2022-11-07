@@ -37,7 +37,10 @@ const styles = StyleSheet.create({
 });
 const colorScheme = Appearance.getColorScheme();
 
-// Component for displaying nearest location and whether it's within 100 metres
+/**
+ * return the Nearby Location of user's current location
+ * @param {string} props  The data of the location
+ */
 function NearbyLocation(props) {
   if (typeof props.location != 'undefined') {
     return (
@@ -59,7 +62,10 @@ function NearbyLocation(props) {
   }
 }
 
-// Main component for displaying the map and markers
+/**
+ * Main component for displaying the map and markers
+ * @param {string} props  The data of the location
+ */
 export default function ShowMap({
   theme,
   setStateLocation,
@@ -128,6 +134,11 @@ export default function ShowMap({
     }
   }, []);
 
+  /**
+   * return full name of the user
+   * @param   {string} userLocation  Information on the location of the user (all data of the location)
+   * @return  {string}               The Nearest location within the user
+   */
   function calculateDistance(userLocation) {
     const nearestLocations = mapState.locations
       .map(location => {
@@ -158,7 +169,7 @@ export default function ShowMap({
           longitude: position.coords.longitude,
         };
         const nearbyLocation = calculateDistance(userLocation);
-        console.log(nearbyLocation);
+        // console.log(nearbyLocation);
         setMapState({
           ...mapState,
           userLocation,
